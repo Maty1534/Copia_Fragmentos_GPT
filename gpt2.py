@@ -113,85 +113,6 @@ def mostrar_bienvenida():
     messagebox.showinfo(
         "Bienvenido", "Bienvenido al programa de copia de fragmentos de texto.\n\nHaga clic en 'Abrir Archivo de Texto' o 'Abrir Archivo PDF' para comenzar.")
 
-    # Pregunta al usuario si desea recibir actualizaciones en línea
-    respuesta_actualizaciones = messagebox.askyesno(
-        "Recibir Actualizaciones", "¿Desea recibir actualizaciones en línea?")
-
-    # Si el usuario elige recibir actualizaciones, configura la variable correspondiente
-    if respuesta_actualizaciones:
-        guardar_configuracion("actualizaciones", "si")
-
-# Función para verificar actualizaciones desde GitHub
-
-
-def verificar_actualizaciones():
-    try:
-        # URL del archivo ZIP de la última versión en GitHub
-        url = 'https://github.com/Maty1534/Copia_Fragmentos_GPT/archive/refs/heads/main.zip'
-
-        # Descargar la última versión desde GitHub
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            # Crear una ubicación temporal para la actualización
-            temp_dir = 'temp_update_folder'
-            os.makedirs(temp_dir, exist_ok=True)
-
-            # Guardar el contenido del ZIP en la ubicación temporal
-            with open(os.path.join(temp_dir, 'update.zip'), 'wb') as zip_file:
-                zip_file.write(response.content)
-
-            # Extraer el ZIP en la ubicación temporal
-            with zipfile.ZipFile(os.path.join(temp_dir, 'update.zip'), 'r') as zip_ref:
-                zip_ref.extractall(temp_dir)
-
-            # Realizar una copia de seguridad de la versión actual
-            backup_dir = 'backup'
-            os.makedirs(backup_dir, exist_ok=True)
-            for root, _, files in os.walk('.'):
-                for file in files:
-                    shutil.copy(os.path.join(root, file),
-                                os.path.join(backup_dir, file))
-
-            # Sobrescribir los archivos existentes con los nuevos
-            for root, _, files in os.walk(os.path.join(temp_dir, 'Copia_Fragmentos_GPT-main')):
-                for file in files:
-                    shutil.copy(os.path.join(root, file), root)
-
-            # Eliminar la ubicación temporal y la copia de seguridad
-            shutil.rmtree(temp_dir)
-            shutil.rmtree(backup_dir)
-
-            # Informar al usuario que la actualización se ha completado
-            messagebox.showinfo(
-                "Actualización Exitosa", "La actualización se ha completado con éxito. Por favor, reinicia la aplicación.")
-        else:
-            messagebox.showerror(
-                "Error de Actualización", "No se pudo descargar la actualización desde GitHub.")
-    except Exception as e:
-        messagebox.showerror("Error de Actualización",
-                             f"Ocurrió un error durante la actualización: {str(e)}")
-
-# Función para actualizar el programa
-
-
-def actualizar_programa():
-    # Obtén la configuración actual de actualizaciones
-    configuracion_actualizaciones = obtener_configuracion("actualizaciones")
-
-    # Verifica si el usuario ha aceptado recibir actualizaciones en línea
-    if configuracion_actualizaciones == "si":
-        # Llama a la función para verificar actualizaciones desde GitHub
-        actualizacion_exitosa = verificar_actualizaciones()
-
-        # Comprueba si la actualización se realizó con éxito
-        if actualizacion_exitosa:
-            messagebox.showinfo(
-                "Actualización Exitosa", "La aplicación está actualizada.")
-        else:
-            messagebox.showinfo(
-                "Sin Actualizaciones", "No hay actualizaciones disponibles.")
-
 
 def abrir_configuracion():
     configuracion_window = tk.Toplevel(root)
@@ -214,12 +135,8 @@ def abrir_configuracion():
                              command=lambda: aplicar_configuracion(int(chunk_entry.get())))
     apply_button.pack()
 
-    # Botón para realizar una actualización inmediata
-    update_button = tk.Button(configuracion_window, text="Actualizar Ahora",
-                              command=actualizar_programa)
-    update_button.pack()
-
     # Función para aplicar el cambio de tamaño de bloque
+
     def aplicar_configuracion(nuevo_tamano):
         global CHUNK_SIZE
         CHUNK_SIZE = nuevo_tamano
@@ -304,8 +221,6 @@ if not obtener_configuracion("bienvenida"):
     mostrar_bienvenida()
     guardar_configuracion("bienvenida", "visto")
 
-# Llama a la función para actualizar el programa
-actualizar_programa()
 
 root.iconify()  # Minimiza la ventana al inicio
 
