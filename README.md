@@ -1,6 +1,6 @@
 # Copia_Fragmentos_GPT
 
-[Boton de Descarga: 💾](https://github.com/d69e8d1c-5358-4177-b537-be7ada3a564a)
+[Boton de Descarga: 💾](https://github.com/Maty1534/Copia_Fragmentos_GPT/releases/download/copy_fragment/Copiador_Fragmentos.zip)
 
 El proyecto es una aplicación de escritorio simple que permite a los usuarios abrir archivos de texto o PDF y dividir su contenido en fragmentos de un tamaño especificado. Luego, los usuarios pueden copiar el fragmento actual al portapapeles para su uso, como entrada de texto en otro programa.
 
